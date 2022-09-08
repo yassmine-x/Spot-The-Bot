@@ -6,16 +6,37 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest",
+    "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs,https, http --hack"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "dependencies": {
+    "@react-navigation/native": "^6.0.12",
+    "@react-navigation/native-stack": "^6.8.0",
+    "axios": "^0.27.2",
     "expo": "~46.0.9",
     "expo-status-bar": "~1.4.0",
+    "fs": "^0.0.1-security",
+    "needle": "^3.1.0",
+    "node": "^16.17.0",
+    "purgomalum-swear-filter": "^1.0.2",
     "react": "18.0.0",
-    "react-native": "0.69.5"
+    "react-native": "0.69.5",
+    "react-native-countdown-component": "^2.7.1",
+    "react-native-fs": "^2.20.0",
+    "react-native-safe-area-context": "4.3.1",
+    "react-native-screens": "~3.15.0",
+    "rn-nodeify": "^10.3.0",
+    "xcode": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "jest": "^29.0.2"
   },
   "private": true
 }
