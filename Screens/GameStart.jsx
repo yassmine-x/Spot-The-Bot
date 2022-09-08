@@ -1,122 +1,102 @@
+import { View, Text, Button, StyleSheet, Pressable } from "react-native";
 import { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  Button,
-  StyleSheet,
-  Alert,
-  Image,
-  ActivityIndicator,
-  TouchableHighlight,
-  Pressable,
-} from "react-native";
-import Countdown from "react-native-countdown-component";
-import showTweets from "../Twitterapi";
+import { NavigationContainer, navigation } from "@react-navigation/native";
 
-export default GameStart = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [tweetData, setTweetData] = useState([]);
-  const userNames = ["@tweetdaddy20", "@Barry_1964"];
+const topicPromptsEasy = [
+  {
+    name: "Youtube",
+    promptAI: "Write a short passionate comment about Youtube",
+    promptTwitter: "Youtube",
+  },
+  {
+    name: "Spain",
+    promptAI: "Write a short comment on Spain",
+    promptTwitter: "Spain",
+  },
+];
+
+const topicPromptsHard = [
+  {
+    name: "Metal Music",
+    promptAI:
+      "Write a short, informal, passionate,  comment about the effect metal music has had on you",
+    promptTwitter: "Metal Music",
+  },
+  {
+    name: "FromSoftware",
+    promptAI: "Write a short passionate comment about FromSoftware",
+    promptTwitter: "FromSoftware",
+  },
+  {
+    name: "The Meaning Of Life",
+    promptAI:
+      "Write a short, informal, passionate and insightful statement on the meaning of life.",
+    promptTwitter: "Meaning Of Life",
+  },
+  {
+    name: "Fusion Energy",
+    promptAI:
+      "Write a short, insightful, informal, passionate, personal statement on fusion energy. Sign off as a nuclear physicist.",
+    promptTwitter: "Fusion Energy",
+  },
+];
+
+export default function TopicSelection({ navigation }) {
+  const [topic, setTopic] = useState("");
   const [isPressedOne, setIsPressedOne] = useState(false);
-  const [isPressedTwo, setIsPressedTwo] = useState(false);
-
-  useEffect(() => {
-    showTweets("metal").then((data) => {
-      setTweetData(data);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-    });
-  }, []);
-
-  function handlePressOne(event) {
+  function handleTopicPress(value) {
     setIsPressedOne((prevPressed) => {
       setIsPressedOne(!prevPressed);
     });
-    if (isPressedTwo === true) {
-      setIsPressedTwo(false);
-    }
+    setTopic(value);
   }
-
-  function handlePressTwo(event) {
-    setIsPressedTwo((prevPressed) => {
-      setIsPressedTwo(!prevPressed);
-    });
-    if (isPressedOne === true) {
-      setIsPressedOne(false);
-    }
-  }
-
-  const handleFinish = () => {
-    Alert.alert("Game Over");
-  };
 
   return (
-    <>
-      {isLoading ? (
-        <View style={styles.container}>
-          <Text style={styles.loading}>Loading</Text>
-          <ActivityIndicator size="large"></ActivityIndicator>
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <Countdown
-            size={30}
-            until={50}
-            onFinish={() => {
-              handleFinish();
-            }}
-            timeToShow={["S"]}
-          />
+    <View style={styles.container}>
+      <Text>Topic Selection</Text>
 
-          <View style={styles.textOne}>
-            <Pressable
-              style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
-              onPress={() => handlePressOne()}
-            >
-              <Image
-                style={styles.profilepicture}
-                source={{
-                  uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-                }}
-              ></Image>
-              <Text>{userNames[0]}</Text>
-              <Text>{tweetData[0][1]}</Text>
-            </Pressable>
-          </View>
+      <Button
+        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+        onPress={() => handleTopicPress(topicPromptsHard[0].name)}
+        title={topicPromptsHard[0].name}
+      >
+        {topicPromptsHard[0].name}
+      </Button>
 
-          <View style={styles.textTwo}>
-            <Pressable
-              style={{ backgroundColor: isPressedTwo ? `#228b22` : "#61dafb" }}
-              onPress={() => handlePressTwo()}
-            >
-              <Image
-                style={styles.profilepicture}
-                source={{
-                  uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-                }}
-              ></Image>
-              <Text>{userNames[1]}</Text>
-              <Text>{tweetData[1][1]}</Text>
-            </Pressable>
-          </View>
-        </View>
-      )}
-    </>
+      <Button
+        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+        title={topicPromptsHard[1].name}
+        onPress={() => handleTopicPress(topicPromptsHard[1].name)}
+      >
+        {topicPromptsHard[1].name}
+      </Button>
+      <Button
+        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+        title={topicPromptsHard[2].name}
+        onPress={() => handleTopicPress(topicPromptsHard[2].name)}
+      >
+        {topicPromptsHard[2].name}
+      </Button>
+      <Text>Current Selection: {topic}</Text>
+      <Button
+        title="Confirm and Start Game"
+        onPress={() =>
+          navigation.navigate("GameScreen", {
+            topicName: { topic },
+          })
+        }
+      ></Button>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
   },
-  title: {
-    fontSize: 30,
-  },
-  textOne: {
+  topicSelection: {
     marginTop: 16,
     // paddingVertical: 8,
     borderWidth: StyleSheet.hairlineWidth,
@@ -126,24 +106,5 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     width: 400,
-  },
-  textTwo: {
-    marginTop: 16,
-    // paddingVertical: 8,
-    borderWidth: StyleSheet.hairlineWidth,
-    // backgroundColor: "#61dafb",
-    color: "#20232a",
-    textAlign: "center",
-    fontSize: 30,
-    fontWeight: "bold",
-    width: 400,
-  },
-  profilepicture: {
-    width: 50,
-    height: 50,
-  },
-  loading: {
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

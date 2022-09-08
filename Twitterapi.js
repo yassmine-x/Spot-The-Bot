@@ -63,7 +63,7 @@ async function showTweets(topic) {
 
     tweetText[0].push(tweetData[random1]);
     tweetText[1].push(tweetData[random2]);
-    console.log(tweetText);
+
     return tweetText;
   } catch (error) {
     console.log(error);
