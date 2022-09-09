@@ -12,46 +12,96 @@ import {
 } from "react-native";
 import Countdown from "react-native-countdown-component";
 import showTweets from "../Twitterapi";
+import showAiTweet from "../Aiapi";
 
 export default GameScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [tweetData, setTweetData] = useState([]);
-  const userNames = ["@tweetdaddy20", "@Barry_1964"];
+  const [right, setRight] = useState("");
+  const userNames = ["@tweetdaddy20", "@Barry_1964", "@GoTLover_3099"];
   const [isPressedOne, setIsPressedOne] = useState(false);
   const [isPressedTwo, setIsPressedTwo] = useState(false);
+  const [isPressedThree, setIsPressedThree] = useState(false);
   const { topicName } = route.params;
+  const { aiPrompt } = route.params;
+
+  async function showTiles(topic, aiPrompt) {
+    let humanTweets = await showTweets(topic);
+    let botTweets = await showAiTweet(aiPrompt);
+    let finalTweets = [...humanTweets, ...botTweets];
+    return finalTweets;
+  }
+
+  function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+  }
 
   useEffect(() => {
-    showTweets(topicName.topic).then((data) => {
-      console.log(topicName.topic);
+    showTiles(topicName.topic, aiPrompt.aiPrompt).then((data) => {
+      shuffleArray(data);
       setTweetData(data);
+
       setTimeout(() => {
         setIsLoading(false);
-      }, 2000);
+      }, 100);
     });
   }, []);
 
-  function handlePressOne(event) {
+  function handlePressOne() {
+    setRight(tweetData[0][0]);
     setIsPressedOne((prevPressed) => {
       setIsPressedOne(!prevPressed);
     });
     if (isPressedTwo === true) {
       setIsPressedTwo(false);
     }
+    if (isPressedThree === true) {
+      setIsPressedThree(false);
+    }
   }
 
-  function handlePressTwo(event) {
+  function handlePressTwo() {
+    setRight(tweetData[1][0]);
     setIsPressedTwo((prevPressed) => {
       setIsPressedTwo(!prevPressed);
     });
     if (isPressedOne === true) {
       setIsPressedOne(false);
     }
+    if (isPressedThree === true) {
+      setIsPressedThree(false);
+    }
+  }
+
+  function handlePressThree() {
+    setRight(tweetData[2][0]);
+    setIsPressedThree((prevPressed) => {
+      setIsPressedThree(!prevPressed);
+    });
+    if (isPressedOne === true) {
+      setIsPressedOne(false);
+    }
+    if (isPressedTwo === true) {
+      setIsPressedTwo(false);
+    }
   }
 
   const handleFinish = () => {
     Alert.alert("Game Over");
   };
+
+  function confirmSelection() {
+    if (right === "bot") {
+      Alert.alert("You Found The Bot");
+    } else {
+      Alert.alert("Sorry, that was a real person");
+    }
+  }
 
   return (
     <>
@@ -84,7 +134,7 @@ export default GameScreen = ({ route }) => {
                 }}
               ></Image>
               <Text>{userNames[0]}</Text>
-              <Text>{tweetData[0][1]}</Text>
+              <Text>{tweetData[0][0]}</Text>
             </Pressable>
           </View>
 
@@ -100,9 +150,27 @@ export default GameScreen = ({ route }) => {
                 }}
               ></Image>
               <Text>{userNames[1]}</Text>
-              <Text>{tweetData[1][1]}</Text>
+              <Text>{tweetData[1][0]}</Text>
             </Pressable>
           </View>
+          <View style={styles.textTwo}>
+            <Pressable
+              style={{
+                backgroundColor: isPressedThree ? `#228b22` : "#61dafb",
+              }}
+              onPress={() => handlePressThree()}
+            >
+              <Image
+                style={styles.profilepicture}
+                source={{
+                  uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                }}
+              ></Image>
+              <Text>{userNames[2]}</Text>
+              <Text>{tweetData[2][0]}</Text>
+            </Pressable>
+          </View>
+          <Button title="Confirm" onPress={() => confirmSelection()}></Button>
         </View>
       )}
     </>

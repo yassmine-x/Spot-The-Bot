@@ -1,4 +1,4 @@
-const showTweets = require("../Twitterapi2");
+const showTweets = require("../Twitterapi");
 
 describe("showTweets", () => {
   it("Responds with an array", async () => {

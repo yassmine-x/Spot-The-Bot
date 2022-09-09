@@ -43,12 +43,14 @@ const topicPromptsHard = [
 
 export default function TopicSelection({ navigation }) {
   const [topic, setTopic] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
   const [isPressedOne, setIsPressedOne] = useState(false);
   function handleTopicPress(value) {
     setIsPressedOne((prevPressed) => {
       setIsPressedOne(!prevPressed);
     });
-    setTopic(value);
+    setTopic(value.name);
+    setAiPrompt(value.promptAI);
   }
 
   return (
@@ -57,7 +59,7 @@ export default function TopicSelection({ navigation }) {
 
       <Button
         style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
-        onPress={() => handleTopicPress(topicPromptsHard[0].name)}
+        onPress={() => handleTopicPress(topicPromptsHard[0])}
         title={topicPromptsHard[0].name}
       >
         {topicPromptsHard[0].name}
@@ -66,14 +68,14 @@ export default function TopicSelection({ navigation }) {
       <Button
         style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
         title={topicPromptsHard[1].name}
-        onPress={() => handleTopicPress(topicPromptsHard[1].name)}
+        onPress={() => handleTopicPress(topicPromptsHard[1])}
       >
         {topicPromptsHard[1].name}
       </Button>
       <Button
         style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
         title={topicPromptsHard[2].name}
-        onPress={() => handleTopicPress(topicPromptsHard[2].name)}
+        onPress={() => handleTopicPress(topicPromptsHard[2])}
       >
         {topicPromptsHard[2].name}
       </Button>
@@ -83,6 +85,7 @@ export default function TopicSelection({ navigation }) {
         onPress={() =>
           navigation.navigate("GameScreen", {
             topicName: { topic },
+            aiPrompt: { aiPrompt },
           })
         }
       ></Button>

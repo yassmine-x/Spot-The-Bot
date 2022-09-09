@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import { NavigationContainer, navigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import "react-native-url-polyfill/auto";
 
 import Login from "./Screens/Login";
 import HomeFeed from "./Screens/HomeFeed";
