@@ -13,6 +13,7 @@ import { NavigationContainer, navigation } from "@react-navigation/native";
 import Countdown from "react-native-countdown-component";
 import showTweets from "../Twitterapi";
 import showAiTweet from "../Aiapi";
+import * as Animatable from "react-native-animatable";
 
 export default GameScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);

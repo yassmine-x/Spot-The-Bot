@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useState, useEffect } from "react";
 import { NavigationContainer, navigation } from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
 
 const topicPromptsEasy = [
   {
@@ -67,27 +68,30 @@ export default function TopicSelection({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Topic Selection</Text>
-
-      <Pressable
-        // style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
-        style={styles.button}
-        onPress={() => handleTopicPress(topicPromptsHard[0])}
-      >
-        <Text style={styles.text}>{topicPromptsHard[0].name}</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.button}
-        onPress={() => handleTopicPress(topicPromptsHard[1])}
-      >
-        <Text style={styles.text}>{topicPromptsHard[1].name}</Text>
-      </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={() => handleTopicPress(topicPromptsHard[2])}
-      >
-        <Text style={styles.text}>{topicPromptsHard[2].name}</Text>
-      </Pressable>
+      <Animatable.View animation="bounceInLeft">
+        <Pressable
+          style={styles.button}
+          onPress={() => handleTopicPress(topicPromptsHard[0])}
+        >
+          <Text style={styles.text}>{topicPromptsHard[0].name}</Text>
+        </Pressable>
+      </Animatable.View>
+      <Animatable.View animation="bounceInDown">
+        <Pressable
+          style={styles.button}
+          onPress={() => handleTopicPress(topicPromptsHard[1])}
+        >
+          <Text style={styles.text}>{topicPromptsHard[1].name}</Text>
+        </Pressable>
+      </Animatable.View>
+      <Animatable.View animation="bounceInUp">
+        <Pressable
+          style={styles.button}
+          onPress={() => handleTopicPress(topicPromptsHard[2])}
+        >
+          <Text style={styles.text}>{topicPromptsHard[2].name}</Text>
+        </Pressable>
+      </Animatable.View>
       <Text style={styles.currenttopic}>Current Selection: {topic}</Text>
       <Pressable style={styles.button} onPress={() => handlePress()}>
         <Text style={styles.text}>Confirm and Start Game</Text>
