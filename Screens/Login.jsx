@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../Core/config";
 import { NavigationContainer, navigation } from "@react-navigation/native";
+import { StatusBar } from "react-native";
 
 export default Login = ({ navigation }) => {
   const robotTaglines = [
@@ -30,6 +31,7 @@ export default Login = ({ navigation }) => {
 
   const pulseDuration = 7000;
   const btnDuration = 5000;
+  const titleDuration = 5000;
   let tagInd = 1 + Math.floor(Math.random() * robotTaglines.length - 1);
   const [tag, setTag] = useState("");
   function setTagLine() {
@@ -40,6 +42,7 @@ export default Login = ({ navigation }) => {
     setTagLine();
   }, []);
 
+  StatusBar.setHidden(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -96,7 +99,9 @@ export default Login = ({ navigation }) => {
         backgroundColor: "#00ffff",
       }}
     >
-      <Text style={styles.title}>Spot The Bot</Text>
+      <Animatable.View animation="fadeIn" duration={titleDuration}>
+        <Text style={styles.title}>Spot The Bot</Text>
+      </Animatable.View>
       <Animatable.Text
         animation="pulse"
         easing="ease-out"
@@ -140,13 +145,14 @@ export default Login = ({ navigation }) => {
               <Text style={styles.text}>Sign out</Text>
             </TouchableOpacity>
           )}
-
-          <TouchableOpacity
-            onPress={handleSignUp}
-            style={[styles.button, styles.buttonOutline]}
-          >
-            <Text style={styles.text}>Register</Text>
-          </TouchableOpacity>
+          <Animatable.View animation="bounceInDown" duration={btnDuration}>
+            <TouchableOpacity
+              onPress={handleSignUp}
+              style={[styles.button, styles.buttonOutline]}
+            >
+              <Text style={styles.text}>Register</Text>
+            </TouchableOpacity>
+          </Animatable.View>
         </View>
       </KeyboardAvoidingView>
     </View>
@@ -154,14 +160,14 @@ export default Login = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   title: {
-    fontSize: 80,
+    fontSize: 70,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 250,
+    bottom: 80,
   },
   tag: {
     fontSize: 15,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 220,
+    bottom: 60,
     width: 300,
     alignItems: "center",
   },

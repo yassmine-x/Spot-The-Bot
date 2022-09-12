@@ -6,6 +6,7 @@ import {
   useFonts,
   DotGothic16_400Regular,
 } from "@expo-google-fonts/dotgothic16";
+import { StatusBar } from "react-native";
 
 import Login from "./Screens/Login";
 import HomeFeed from "./Screens/HomeFeed";
@@ -16,6 +17,7 @@ import Failure from "./Screens/Failure";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  StatusBar.setHidden(true);
   let [fontsLoaded] = useFonts({
     DotGothic16_400Regular,
   });
@@ -25,7 +27,11 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="GameScreen" component={GameScreen} />
           <Stack.Screen name="GameStart" component={GameStart} />
           <Stack.Screen name="HomeFeed" component={HomeFeed} />
