@@ -7,14 +7,14 @@ import {
   Alert,
   Image,
   ActivityIndicator,
-  TouchableHighlight,
   Pressable,
 } from "react-native";
+import { NavigationContainer, navigation } from "@react-navigation/native";
 import Countdown from "react-native-countdown-component";
 import showTweets from "../Twitterapi";
 import showAiTweet from "../Aiapi";
 
-export default GameScreen = ({ route }) => {
+export default GameScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [tweetData, setTweetData] = useState([]);
   const [right, setRight] = useState("");
@@ -22,6 +22,8 @@ export default GameScreen = ({ route }) => {
   const [isPressedOne, setIsPressedOne] = useState(false);
   const [isPressedTwo, setIsPressedTwo] = useState(false);
   const [isPressedThree, setIsPressedThree] = useState(false);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(1);
   const { topicName } = route.params;
   const { aiPrompt } = route.params;
 
@@ -95,11 +97,19 @@ export default GameScreen = ({ route }) => {
     Alert.alert("Game Over");
   };
 
+  function handleScore() {
+    let newScore = 5;
+    setScore(newScore);
+  }
+
   function confirmSelection() {
     if (right === "bot") {
-      Alert.alert("You Found The Bot");
+      handleScore();
+      navigation.navigate("Success", {
+        score: { score },
+      });
     } else {
-      Alert.alert("Sorry, that was a real person");
+      navigation.navigate("Failure");
     }
   }
 
@@ -134,7 +144,7 @@ export default GameScreen = ({ route }) => {
                 }}
               ></Image>
               <Text>{userNames[0]}</Text>
-              <Text>{tweetData[0][0]}</Text>
+              <Text>{tweetData[0][1]}</Text>
             </Pressable>
           </View>
 
@@ -150,7 +160,7 @@ export default GameScreen = ({ route }) => {
                 }}
               ></Image>
               <Text>{userNames[1]}</Text>
-              <Text>{tweetData[1][0]}</Text>
+              <Text>{tweetData[1][1]}</Text>
             </Pressable>
           </View>
           <View style={styles.textTwo}>
@@ -167,10 +177,13 @@ export default GameScreen = ({ route }) => {
                 }}
               ></Image>
               <Text>{userNames[2]}</Text>
-              <Text>{tweetData[2][0]}</Text>
+              <Text>{tweetData[2][1]}</Text>
             </Pressable>
           </View>
-          <Button title="Confirm" onPress={() => confirmSelection()}></Button>
+          <Button
+            title="Confirm"
+            onPress={() => confirmSelection({ navigation })}
+          ></Button>
         </View>
       )}
     </>

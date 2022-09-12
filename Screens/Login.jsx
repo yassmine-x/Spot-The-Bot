@@ -1,6 +1,92 @@
-import { Text, View, Button } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import * as Animatable from "react-native-animatable";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { auth } from "../Core/config";
+import { NavigationContainer, navigation } from "@react-navigation/native";
 
 export default Login = ({ navigation }) => {
+  const robotTaglines = [
+    "I spy with my little eye, a robot hidden among the people.",
+    "The aim of the game is to find the robot hidden amongst a group of people.",
+    "The goal of the game Spot The Bot is to find the robot hidden in a group of people.",
+    "The game Spot The Bot is all about finding the robot hidden in a group of people.",
+    "The game Spot The Bot is a fun game that requires you to figure out who is the robot.",
+
+    "The robot is the one who isn't laughing at all the hilarious jokes told during the game.",
+  ];
+
+  const pulseDuration = 7000;
+  const btnDuration = 5000;
+  let tagInd = 1 + Math.floor(Math.random() * robotTaglines.length - 1);
+  const [tag, setTag] = useState("");
+  function setTagLine() {
+    setTag(robotTaglines[tagInd]);
+  }
+
+  useEffect(() => {
+    setTagLine();
+  }, []);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const handleSignUp = ({ navigation }) => {
+    console.log(email, password);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        console.log("Registered in with", email);
+        const user = userCredentials.user;
+        setIsSignedIn(true);
+        navigation.navigate("HomeFeed");
+        return userCredentials;
+      })
+      .catch((error) => {
+        console.log(error.message);
+        alert(error.message);
+        throw error;
+      });
+  };
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setIsSignedIn(false);
+        console.log("User signed out");
+      })
+      .catch((error) => {
+        alert(error.message);
+        throw error;
+      });
+  };
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+        console.log("Logged in with", email);
+        setIsSignedIn(true);
+        navigation.navigate("HomeFeed");
+        return userCredentials;
+      })
+      .catch((error) => {
+        console.log(error.message);
+        alert(error.message);
+        throw error;
+      });
+  };
+
   return (
     <View
       style={{
@@ -10,8 +96,90 @@ export default Login = ({ navigation }) => {
         backgroundColor: "#00ffff",
       }}
     >
-      <Text>Home Screen</Text>
-      <Button title="Log In" onPress={() => navigation.navigate("HomeFeed")} />
+      <Text style={styles.title}>Spot The Bot</Text>
+      <Animatable.Text
+        animation="pulse"
+        easing="ease-out"
+        duration={pulseDuration}
+        iterationCount="infinite"
+        style={styles.tag}
+      >
+        <Text>{tag}</Text>
+      </Animatable.Text>
+      <KeyboardAvoidingView style={styles.Container} behaviour="padding">
+        <View styles={styles.inputContainer}>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChange={(text) => setEmail(text.nativeEvent.text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChange={(text) => setPassword(text.nativeEvent.text)}
+            style={styles.input}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          {isSignedIn === false ? (
+            <Animatable.View animation="bounceInUp" duration={btnDuration}>
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={[styles.button, styles.buttonOutline]}
+              >
+                <Text style={styles.text}>Login</Text>
+              </TouchableOpacity>
+            </Animatable.View>
+          ) : (
+            <TouchableOpacity
+              onPress={handleSignOut}
+              style={[styles.button, styles.buttonOutline]}
+            >
+              <Text style={styles.text}>Sign out</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            onPress={handleSignUp}
+            style={[styles.button, styles.buttonOutline]}
+          >
+            <Text style={styles.text}>Register</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 80,
+    fontFamily: "DotGothic16_400Regular",
+    bottom: 250,
+  },
+  tag: {
+    fontSize: 15,
+    fontFamily: "DotGothic16_400Regular",
+    bottom: 220,
+    width: 300,
+    alignItems: "center",
+  },
+  button: {
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: `#6495ed`,
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontFamily: "DotGothic16_400Regular",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+});

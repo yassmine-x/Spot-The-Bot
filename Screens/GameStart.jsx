@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { useState, useEffect } from "react";
 import { NavigationContainer, navigation } from "@react-navigation/native";
 
@@ -53,42 +53,45 @@ export default function TopicSelection({ navigation }) {
     setAiPrompt(value.promptAI);
   }
 
+  function handlePress() {
+    if (topic === "") {
+      Alert.alert("Please select a topic");
+    } else {
+      navigation.navigate("GameScreen", {
+        topicName: { topic },
+        aiPrompt: { aiPrompt },
+      });
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Topic Selection</Text>
+      <Text style={styles.header}>Topic Selection</Text>
 
-      <Button
-        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+      <Pressable
+        // style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+        style={styles.button}
         onPress={() => handleTopicPress(topicPromptsHard[0])}
-        title={topicPromptsHard[0].name}
       >
-        {topicPromptsHard[0].name}
-      </Button>
+        <Text style={styles.text}>{topicPromptsHard[0].name}</Text>
+      </Pressable>
 
-      <Button
-        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
-        title={topicPromptsHard[1].name}
+      <Pressable
+        style={styles.button}
         onPress={() => handleTopicPress(topicPromptsHard[1])}
       >
-        {topicPromptsHard[1].name}
-      </Button>
-      <Button
-        style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
-        title={topicPromptsHard[2].name}
+        <Text style={styles.text}>{topicPromptsHard[1].name}</Text>
+      </Pressable>
+      <Pressable
+        style={styles.button}
         onPress={() => handleTopicPress(topicPromptsHard[2])}
       >
-        {topicPromptsHard[2].name}
-      </Button>
-      <Text>Current Selection: {topic}</Text>
-      <Button
-        title="Confirm and Start Game"
-        onPress={() =>
-          navigation.navigate("GameScreen", {
-            topicName: { topic },
-            aiPrompt: { aiPrompt },
-          })
-        }
-      ></Button>
+        <Text style={styles.text}>{topicPromptsHard[2].name}</Text>
+      </Pressable>
+      <Text style={styles.currenttopic}>Current Selection: {topic}</Text>
+      <Pressable style={styles.button} onPress={() => handlePress()}>
+        <Text style={styles.text}>Confirm and Start Game</Text>
+      </Pressable>
     </View>
   );
 }
@@ -96,18 +99,38 @@ export default function TopicSelection({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#00ffff",
     alignItems: "center",
   },
-  topicSelection: {
-    marginTop: 16,
-    // paddingVertical: 8,
+
+  button: {
     borderWidth: StyleSheet.hairlineWidth,
-    // backgroundColor: "#61dafb",
-    color: "#20232a",
-    textAlign: "center",
-    fontSize: 30,
-    fontWeight: "bold",
-    width: 400,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    marginBottom: 15,
+    marginTop: 15,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: `#6495ed`,
+    width: 350,
+  },
+  text: {
+    fontSize: 20,
+    lineHeight: 21,
+    fontFamily: "DotGothic16_400Regular",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  header: {
+    fontSize: 63,
+    fontFamily: "DotGothic16_400Regular",
+    marginTop: 10,
+  },
+  currenttopic: {
+    fontSize: 24,
+    fontFamily: "DotGothic16_400Regular",
+    marginTop: 10,
   },
 });
