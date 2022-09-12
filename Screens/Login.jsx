@@ -16,7 +16,6 @@ import {
 } from "firebase/auth";
 import { auth } from "../Core/config";
 import { NavigationContainer, navigation } from "@react-navigation/native";
-import { StatusBar } from "react-native";
 
 export default Login = ({ navigation }) => {
   const robotTaglines = [
@@ -42,7 +41,6 @@ export default Login = ({ navigation }) => {
     setTagLine();
   }, []);
 
-  StatusBar.setHidden(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);

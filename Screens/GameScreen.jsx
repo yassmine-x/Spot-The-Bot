@@ -15,7 +15,7 @@ import showTweets from "../Twitterapi";
 import showAiTweet from "../Aiapi";
 import * as Animatable from "react-native-animatable";
 
-export default GameScreen = ({ route, navigation }) => {
+export default GameScreen = ({ route, navigation, score, setScore }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [tweetData, setTweetData] = useState([]);
   const [right, setRight] = useState("");
@@ -23,10 +23,11 @@ export default GameScreen = ({ route, navigation }) => {
   const [isPressedOne, setIsPressedOne] = useState(false);
   const [isPressedTwo, setIsPressedTwo] = useState(false);
   const [isPressedThree, setIsPressedThree] = useState(false);
-  const [score, setScore] = useState(0);
+
   const [streak, setStreak] = useState(1);
   const { topicName } = route.params;
   const { aiPrompt } = route.params;
+  let scoreState = 0;
 
   async function showTiles(topic, aiPrompt) {
     let humanTweets = await showTweets(topic);
@@ -43,7 +44,7 @@ export default GameScreen = ({ route, navigation }) => {
       array[j] = temp;
     }
   }
-
+  console.log(score);
   useEffect(() => {
     showTiles(topicName.topic, aiPrompt.aiPrompt).then((data) => {
       shuffleArray(data);
@@ -99,16 +100,16 @@ export default GameScreen = ({ route, navigation }) => {
   };
 
   function handleScore() {
-    let newScore = 5;
-    setScore(newScore);
+    setScore((prevScore) => {
+      return prevScore + 1;
+    });
   }
 
   function confirmSelection() {
     if (right === "bot") {
       handleScore();
-      navigation.navigate("Success", {
-        score: { score },
-      });
+      console.log(score);
+      navigation.navigate("Success");
     } else {
       navigation.navigate("Failure");
     }

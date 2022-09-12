@@ -58,10 +58,12 @@ export default function TopicSelection({ navigation }) {
     if (topic === "") {
       Alert.alert("Please select a topic");
     } else {
-      navigation.navigate("GameScreen", {
-        topicName: { topic },
-        aiPrompt: { aiPrompt },
-      });
+      setTimeout(() => {
+        navigation.navigate("GameScreen", {
+          topicName: { topic },
+          aiPrompt: { aiPrompt },
+        });
+      }, 300);
     }
   }
 
