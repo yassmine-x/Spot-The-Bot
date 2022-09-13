@@ -14,12 +14,11 @@ import HomeFeed from "./Screens/HomeFeed";
 import GameStart from "./Screens/GameStart";
 import GameScreen from "./Screens/GameScreen";
 import GameFinish from "./Screens/GameFinish";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [score, setScore] = useState(0);
-  const [topic, setTopic] = useState("");
-  const [aiPrompt, setAiPrompt] = useState("");
   StatusBar.setHidden(true);
   let [fontsLoaded] = useFonts({
     DotGothic16_400Regular,
@@ -30,34 +29,24 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator ini>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="Login" options={{ headerShown: false }}>
+            {(props) => <Login {...props} />}
+          </Stack.Screen>
           <Stack.Screen name="GameScreen" options={{ headerShown: false }}>
             {(props) => (
               <GameScreen score={score} setScore={setScore} {...props} />
             )}
           </Stack.Screen>
-          <Stack.Screen name="GameStart" options={{ headerShown: false }}>
-            {(props) => (
-              <GameStart
-                score={score}
-                topic={topic}
-                setTopic={setTopic}
-                aiPrompt={aiPrompt}
-                setAiPrompt={setAiPrompt}
-                {...props}
-              />
-            )}
-          </Stack.Screen>
+          <Stack.Screen
+            name="GameStart"
+            component={GameStart}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="HomeFeed"
             component={HomeFeed}
             options={{ headerShown: false }}
           />
-
           <Stack.Screen
             name="GameFinish"
             options={{ headerShown: false }}

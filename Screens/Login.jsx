@@ -16,7 +16,8 @@ import {
 } from "firebase/auth";
 import { auth } from "../Core/config";
 import { NavigationContainer, navigation } from "@react-navigation/native";
-
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { db } from "../Core/config";
 export default Login = ({ navigation }) => {
   const robotTaglines = [
     "I spy with my little eye, a robot hidden among the people.",
@@ -24,31 +25,62 @@ export default Login = ({ navigation }) => {
     "The goal of the game Spot The Bot is to find the robot hidden in a group of people.",
     "The game Spot The Bot is all about finding the robot hidden in a group of people.",
     "The game Spot The Bot is a fun game that requires you to figure out who is the robot.",
-
     "The robot is the one who isn't laughing at all the hilarious jokes told during the game.",
   ];
-
   const pulseDuration = 7000;
   const btnDuration = 5000;
-  const titleDuration = 5000;
   let tagInd = 1 + Math.floor(Math.random() * robotTaglines.length - 1);
   const [tag, setTag] = useState("");
   function setTagLine() {
     setTag(robotTaglines[tagInd]);
   }
-
   useEffect(() => {
     setTagLine();
   }, []);
-
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const handleSignUp = ({ navigation }) => {
-    console.log(email, password);
+  const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
-        console.log("Registered in with", email);
+        const uid = userCredentials.user.uid;
+        //const user = userCredentials.user;
+        // console.log("Logged in with", email);
+        const userData = {
+          id: uid,
+          email,
+          username,
+          createdAt: new Date().toISOString(),
+          // decision: "None",
+          // firstName: "",
+          // lastName: "",
+          // userImg: `no-profile-image.png`,
+        };
+        const scoresData = {
+          id: uid,
+          createdAt: new Date().toISOString(),
+          highScore: 0,
+        };
+
+        async function get(db) {
+          const userRef = collection(db, "Users");
+          // const userdocs = await getDocs(usersRef);
+          // const username = userdocs.docs.map((doc) => doc.data());
+          const usersRef = doc(db, "Users", username);
+          await setDoc(usersRef, userData);
+          const userdocs = await getDocs(userRef);
+          console.log(userdocs.docs.map((doc) => doc.data()));
+          const scoresRef = doc(db, "Scores", username);
+          await setDoc(scoresRef, scoresData);
+        }
+
+        // async function updateScore(db) {
+        //   const scoresRef = doc(db, "Scores", username);
+        //   await setDoc(scoresRef, scoresData);
+        // }
+
+        get(db);
         const user = userCredentials.user;
         setIsSignedIn(true);
         navigation.navigate("HomeFeed");
@@ -71,7 +103,6 @@ export default Login = ({ navigation }) => {
         throw error;
       });
   };
-
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
@@ -87,19 +118,16 @@ export default Login = ({ navigation }) => {
         throw error;
       });
   };
-
   return (
     <View
       style={{
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#00ffff",
+        backgroundColor: "#00FFFF",
       }}
     >
-      <Animatable.View animation="fadeIn" duration={titleDuration}>
-        <Text style={styles.title}>Spot The Bot</Text>
-      </Animatable.View>
+      <Text style={styles.title}>Spot The Bot</Text>
       <Animatable.Text
         animation="pulse"
         easing="ease-out"
@@ -111,6 +139,12 @@ export default Login = ({ navigation }) => {
       </Animatable.Text>
       <KeyboardAvoidingView style={styles.Container} behaviour="padding">
         <View styles={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => setUsername(text)}
+            placeholder="Username"
+            // dense={true}
+          />
           <TextInput
             placeholder="Email"
             value={email}
@@ -143,14 +177,12 @@ export default Login = ({ navigation }) => {
               <Text style={styles.text}>Sign out</Text>
             </TouchableOpacity>
           )}
-          <Animatable.View animation="bounceInDown" duration={btnDuration}>
-            <TouchableOpacity
-              onPress={handleSignUp}
-              style={[styles.button, styles.buttonOutline]}
-            >
-              <Text style={styles.text}>Register</Text>
-            </TouchableOpacity>
-          </Animatable.View>
+          <TouchableOpacity
+            onPress={handleSignUp}
+            style={[styles.button, styles.buttonOutline]}
+          >
+            <Text style={styles.text}>Register</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </View>
@@ -158,14 +190,14 @@ export default Login = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   title: {
-    fontSize: 70,
+    fontSize: 80,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 80,
+    bottom: 250,
   },
   tag: {
     fontSize: 15,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 60,
+    bottom: 220,
     width: 300,
     alignItems: "center",
   },
