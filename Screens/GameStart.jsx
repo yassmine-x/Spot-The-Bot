@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Image,
+  TouchableHighlight,
+  ImageBackground,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { NavigationContainer, navigation } from "@react-navigation/native";
 import * as Animatable from "react-native-animatable";
@@ -15,13 +24,14 @@ const topicPromptsEasy = [
     promptTwitter: "Spain",
   },
 ];
-
 const topicPromptsHard = [
   {
     name: "Metal Music",
     promptAI:
       "Write a short, informal, passionate,  comment about the effect metal music has had on you",
     promptTwitter: "Metal Music",
+    imgUrl:
+      "https://img.pixers.pics/pho_wat(s3:700/FO/69/11/06/1/700_FO6911061_00b13758482f21657ba218c28d310706.jpg,566,700,cms:2018/10/5bd1b6b8d04b8_220x50-watermark.png,over,346,650,jpg)/wall-murals-heavy-metal-guitarist.jpg.jpg",
   },
   {
     name: "FromSoftware",
@@ -41,7 +51,6 @@ const topicPromptsHard = [
     promptTwitter: "Fusion Energy",
   },
 ];
-
 export default function TopicSelection({ navigation }) {
   const [topic, setTopic] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
@@ -63,22 +72,21 @@ export default function TopicSelection({ navigation }) {
           topicName: { topic },
           aiPrompt: { aiPrompt },
         });
-      }, 300);
+      }, 100);
     }
   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Topic Selection</Text>
       <Animatable.View animation="bounceInLeft">
-        <Pressable
+        <TouchableHighlight
           style={styles.button}
           onPress={() => handleTopicPress(topicPromptsHard[0])}
         >
           <Text style={styles.text}>{topicPromptsHard[0].name}</Text>
-        </Pressable>
+        </TouchableHighlight>
       </Animatable.View>
-      <Animatable.View animation="bounceInDown">
+      <Animatable.View animation="bounceInRight">
         <Pressable
           style={styles.button}
           onPress={() => handleTopicPress(topicPromptsHard[1])}
@@ -86,7 +94,7 @@ export default function TopicSelection({ navigation }) {
           <Text style={styles.text}>{topicPromptsHard[1].name}</Text>
         </Pressable>
       </Animatable.View>
-      <Animatable.View animation="bounceInUp">
+      <Animatable.View animation="bounceInLeft">
         <Pressable
           style={styles.button}
           onPress={() => handleTopicPress(topicPromptsHard[2])}
@@ -101,14 +109,12 @@ export default function TopicSelection({ navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#00ffff",
+    backgroundColor: "#00FFFF",
     alignItems: "center",
   },
-
   button: {
     borderWidth: StyleSheet.hairlineWidth,
     alignItems: "center",
@@ -121,6 +127,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: `#6495ed`,
     width: 350,
+    height: 100,
   },
   text: {
     fontSize: 20,
@@ -130,13 +137,17 @@ const styles = StyleSheet.create({
     color: "white",
   },
   header: {
-    fontSize: 63,
+    fontSize: 55,
     fontFamily: "DotGothic16_400Regular",
-    marginTop: 10,
+    marginTop: 60,
   },
   currenttopic: {
     fontSize: 24,
     fontFamily: "DotGothic16_400Regular",
-    marginTop: 10,
+    marginTop: 15,
+  },
+  topicbutton: {
+    width: 350,
+    height: 100,
   },
 });
