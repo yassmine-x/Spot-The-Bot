@@ -29,11 +29,9 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator ini>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="Login" options={{ headerShown: false }}>
+            {(props) => <Login {...props} />}
+          </Stack.Screen>
           <Stack.Screen name="GameScreen" options={{ headerShown: false }}>
             {(props) => (
               <GameScreen score={score} setScore={setScore} {...props} />
