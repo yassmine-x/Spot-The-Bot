@@ -13,26 +13,31 @@ import { NavigationContainer, navigation } from "@react-navigation/native";
 import Countdown from "react-native-countdown-component";
 import showTweets from "../Twitterapi";
 import showAiTweet from "../Aiapi";
-import * as Animatable from "react-native-animatable";
 
 export default GameScreen = ({ route, navigation, score, setScore }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [botTweet, setBotTweet] = useState("");
   const [tweetData, setTweetData] = useState([]);
-  const [right, setRight] = useState("");
-  const userNames = ["@tweetdaddy20", "@Barry_1964", "@GoTLover_3099"];
-  const [isPressedOne, setIsPressedOne] = useState(false);
-  const [isPressedTwo, setIsPressedTwo] = useState(false);
-  const [isPressedThree, setIsPressedThree] = useState(false);
+  const [buttonBg0, setButtonBg0] = useState("#61dafb");
+  const [buttonBg1, setButtonBg1] = useState("#61dafb");
+  const [buttonBg2, setButtonBg2] = useState("#61dafb");
+  const [question, setQuestion] = useState(0);
+  const [localScore, setLocalScore] = useState(0);
+  let win = false;
 
-  const [streak, setStreak] = useState(1);
+  setScore(0);
+  const userNames = ["@tweetdaddy20", "@Barry_1964", "@GoTLover_3099"];
+
+  const [isClockRunning, setisClockRunning] = useState(true);
+
   const { topicName } = route.params;
   const { aiPrompt } = route.params;
-  let scoreState = 0;
-
   async function showTiles(topic, aiPrompt) {
     let humanTweets = await showTweets(topic);
     let botTweets = await showAiTweet(aiPrompt);
+    setBotTweet(botTweets);
     let finalTweets = [...humanTweets, ...botTweets];
+
     return finalTweets;
   }
 
@@ -44,76 +49,86 @@ export default GameScreen = ({ route, navigation, score, setScore }) => {
       array[j] = temp;
     }
   }
-  console.log(score);
+
   useEffect(() => {
     showTiles(topicName.topic, aiPrompt.aiPrompt).then((data) => {
+      // setWin(false);
       shuffleArray(data);
       setTweetData(data);
+      setisClockRunning(true);
+      setButtonBg0("#61dafb");
+      setButtonBg1("#61dafb");
+      setButtonBg2("#61dafb");
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
+      setIsLoading(false);
     });
-  }, []);
+  }, [question]);
 
-  function handlePressOne() {
-    setRight(tweetData[0][0]);
-    setIsPressedOne((prevPressed) => {
-      setIsPressedOne(!prevPressed);
-    });
-    if (isPressedTwo === true) {
-      setIsPressedTwo(false);
+  async function handlePressOne() {
+    async function handleSelection() {
+      setisClockRunning(false);
+      if (tweetData[0][1] === botTweet[0][1]) {
+        setButtonBg0("#66ff00");
+        win = true;
+      } else {
+        setButtonBg0("red");
+      }
     }
-    if (isPressedThree === true) {
-      setIsPressedThree(false);
-    }
+    await handleSelection();
+    confirmSelection(win);
   }
 
-  function handlePressTwo() {
-    setRight(tweetData[1][0]);
-    setIsPressedTwo((prevPressed) => {
-      setIsPressedTwo(!prevPressed);
-    });
-    if (isPressedOne === true) {
-      setIsPressedOne(false);
+  async function handlePressTwo() {
+    async function handleSelection() {
+      setisClockRunning(false);
+      if (tweetData[1][1] === botTweet[0][1]) {
+        setButtonBg1("#66ff00");
+        win = true;
+      } else {
+        setButtonBg1("red");
+      }
     }
-    if (isPressedThree === true) {
-      setIsPressedThree(false);
-    }
+    await handleSelection();
+    confirmSelection(win);
   }
 
-  function handlePressThree() {
-    setRight(tweetData[2][0]);
-    setIsPressedThree((prevPressed) => {
-      setIsPressedThree(!prevPressed);
-    });
-    if (isPressedOne === true) {
-      setIsPressedOne(false);
+  async function handlePressThree() {
+    async function handleSelection() {
+      setisClockRunning(false);
+      if (tweetData[2][1] === botTweet[0][1]) {
+        setButtonBg2("#66ff00");
+        win = true;
+      } else {
+        setButtonBg2("red");
+      }
     }
-    if (isPressedTwo === true) {
-      setIsPressedTwo(false);
+    await handleSelection();
+    confirmSelection(win);
+  }
+
+  function confirmSelection(win) {
+    if (win === true) {
+      let scoreVar = localScore + 1;
+      setLocalScore(scoreVar);
+      setQuestion((prevQuestion) => {
+        return prevQuestion + 1;
+      });
+
+      console.log("if");
+      const timer = setTimeout(() => {}, 250);
+    } else {
+      setQuestion((prevQuestion) => {
+        return prevQuestion + 1;
+      });
+      const timer = setTimeout(() => {}, 250);
     }
   }
 
   const handleFinish = () => {
-    Alert.alert("Game Over");
-  };
-
-  function handleScore() {
-    setScore((prevScore) => {
-      return prevScore + 1;
+    navigation.navigate("GameFinish", {
+      localScore: { localScore },
     });
-  }
-
-  function confirmSelection() {
-    if (right === "bot") {
-      handleScore();
-      console.log(score);
-      navigation.navigate("Success");
-    } else {
-      navigation.navigate("Failure");
-    }
-  }
+  };
 
   return (
     <>
@@ -127,16 +142,17 @@ export default GameScreen = ({ route, navigation, score, setScore }) => {
           <Text>Your Current Topic: {topicName.topic}</Text>
           <Countdown
             size={30}
-            until={50}
+            until={5}
+            running={isClockRunning}
             onFinish={() => {
               handleFinish();
             }}
             timeToShow={["S"]}
           />
-
+          <Text>Your current score is: {localScore}</Text>
           <View style={styles.textOne}>
             <Pressable
-              style={{ backgroundColor: isPressedOne ? `#228b22` : "#61dafb" }}
+              style={{ backgroundColor: buttonBg0 }}
               onPress={() => handlePressOne()}
             >
               <Image
@@ -152,7 +168,7 @@ export default GameScreen = ({ route, navigation, score, setScore }) => {
 
           <View style={styles.textTwo}>
             <Pressable
-              style={{ backgroundColor: isPressedTwo ? `#228b22` : "#61dafb" }}
+              style={{ backgroundColor: buttonBg1 }}
               onPress={() => handlePressTwo()}
             >
               <Image
@@ -168,7 +184,7 @@ export default GameScreen = ({ route, navigation, score, setScore }) => {
           <View style={styles.textTwo}>
             <Pressable
               style={{
-                backgroundColor: isPressedThree ? `#228b22` : "#61dafb",
+                backgroundColor: buttonBg2,
               }}
               onPress={() => handlePressThree()}
             >

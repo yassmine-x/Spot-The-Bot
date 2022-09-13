@@ -13,8 +13,8 @@ import Login from "./Screens/Login";
 import HomeFeed from "./Screens/HomeFeed";
 import GameStart from "./Screens/GameStart";
 import GameScreen from "./Screens/GameScreen";
-import Success from "./Screens/Success";
-import Failure from "./Screens/Failure";
+import GameFinish from "./Screens/GameFinish";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -47,14 +47,11 @@ export default function App() {
             component={HomeFeed}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Success" options={{ headerShown: false }}>
-            {(props) => <Success score={score} {...props} />}
-          </Stack.Screen>
           <Stack.Screen
-            name="Failure"
-            component={Failure}
+            name="GameFinish"
             options={{ headerShown: false }}
-          />
+            component={GameFinish}
+          ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     );
