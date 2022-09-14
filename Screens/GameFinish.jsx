@@ -29,7 +29,7 @@ export default function GameFinish({ route, navigation, username }) {
   return (
     <View>
       <Text>
-        {userName}, you scored {localScore.localScore} points{" "}
+        {username}, you scored {localScore.localScore} points{" "}
       </Text>
       <Button
         title="New Game"
