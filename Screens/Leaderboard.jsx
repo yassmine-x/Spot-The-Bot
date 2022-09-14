@@ -14,6 +14,7 @@ import { DataTable } from "react-native-paper";
 
 export default function GetLeaderboard() {
   const leaderboardData = [];
+  let filteredLeaderboardData = [];
   const [table, setTable] = useState([]);
   async function retrieveData() {
     try {
@@ -25,6 +26,11 @@ export default function GetLeaderboard() {
       leaderboardData.sort((a, b) => {
         return b.highScore - a.highScore;
       });
+      filteredLeaderboardData = leaderboardData.filter((data) => {
+        return data.highScore !== 0;
+      });
+
+      console.log(filteredLeaderboardData);
     } catch (err) {
       console.log("Error getting documents", err);
     }
@@ -44,7 +50,7 @@ export default function GetLeaderboard() {
               <Text style={styles.headerright}> HighScore </Text>
             </DataTable.Title>
           </DataTable.Header>
-          {leaderboardData.map(({ userName, highScore, id }) => {
+          {filteredLeaderboardData.map(({ userName, highScore, id }) => {
             return (
               <View style={styles.rows} key={id}>
                 <DataTable.Row>
