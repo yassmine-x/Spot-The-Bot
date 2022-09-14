@@ -14,7 +14,7 @@ import Countdown from "react-native-countdown-component";
 import showTweets from "../Twitterapi";
 import showAiTweet from "../Aiapi";
 
-export default GameScreen = ({ route, navigation, score, setScore }) => {
+export default GameScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [botTweet, setBotTweet] = useState("");
   const [tweetData, setTweetData] = useState([]);
@@ -25,7 +25,6 @@ export default GameScreen = ({ route, navigation, score, setScore }) => {
   const [localScore, setLocalScore] = useState(0);
   let win = false;
 
-  setScore(0);
   const userNames = ["@tweetdaddy20", "@Barry_1964", "@GoTLover_3099"];
 
   const [isClockRunning, setisClockRunning] = useState(true);

@@ -18,7 +18,7 @@ import { auth } from "../Core/config";
 import { NavigationContainer, navigation } from "@react-navigation/native";
 import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../Core/config";
-export default Login = ({ navigation }) => {
+export default Login = ({ navigation, username, setUsername }) => {
   const robotTaglines = [
     "I spy with my little eye, a robot hidden among the people.",
     "The aim of the game is to find the robot hidden amongst a group of people.",
@@ -37,7 +37,7 @@ export default Login = ({ navigation }) => {
   useEffect(() => {
     setTagLine();
   }, []);
-  const [username, setUsername] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);

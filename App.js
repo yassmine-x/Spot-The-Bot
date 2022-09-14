@@ -14,11 +14,13 @@ import HomeFeed from "./Screens/HomeFeed";
 import GameStart from "./Screens/GameStart";
 import GameScreen from "./Screens/GameScreen";
 import GameFinish from "./Screens/GameFinish";
+import GetLeaderboard from "./Screens/Leaderboard";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [score, setScore] = useState(0);
+  const [username, setUsername] = useState("");
+
   StatusBar.setHidden(true);
   let [fontsLoaded] = useFonts({
     DotGothic16_400Regular,
@@ -30,27 +32,28 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator ini>
           <Stack.Screen name="Login" options={{ headerShown: false }}>
-            {(props) => <Login {...props} />}
+            {(props) => (
+              <Login username={username} setUsername={setUsername} {...props} />
+            )}
           </Stack.Screen>
           <Stack.Screen name="GameScreen" options={{ headerShown: false }}>
-            {(props) => (
-              <GameScreen score={score} setScore={setScore} {...props} />
-            )}
+            {(props) => <GameScreen {...props} />}
           </Stack.Screen>
           <Stack.Screen
             name="GameStart"
             component={GameStart}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="HomeFeed" options={{ headerShown: false }}>
+            {(props) => <HomeFeed username={username} {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="GameFinish" options={{ headerShown: false }}>
+            {(props) => <GameFinish username={username} {...props} />}
+          </Stack.Screen>
           <Stack.Screen
-            name="HomeFeed"
-            component={HomeFeed}
+            name="Leaderboard"
             options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="GameFinish"
-            options={{ headerShown: false }}
-            component={GameFinish}
+            component={GetLeaderboard}
           ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
