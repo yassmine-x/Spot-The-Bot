@@ -1,6 +1,6 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
 
-export default HomeFeed = ({ navigation }) => {
+export default HomeFeed = ({ navigation, username }) => {
   return (
     <View
       style={{
@@ -11,11 +11,18 @@ export default HomeFeed = ({ navigation }) => {
       }}
     >
       <Text style={styles.header}>Home Screen</Text>
+      <Text>Hello {username}</Text>
       <Pressable
         style={styles.button}
         onPress={() => navigation.navigate("GameStart")}
       >
         <Text style={styles.text}>Start Game</Text>
+      </Pressable>
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate("Leaderboard")}
+      >
+        <Text style={styles.text}>Leaderboard</Text>
       </Pressable>
     </View>
   );
