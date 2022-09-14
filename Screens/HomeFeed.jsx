@@ -11,7 +11,9 @@ export default HomeFeed = ({ navigation, username }) => {
       }}
     >
       <Text style={styles.header}>Home Screen</Text>
-      <Text>Hello {username}</Text>
+      <View style={styles.greetingbox}>
+        <Text style={styles.greeting}>Hello {username}</Text>
+      </View>
       <Pressable
         style={styles.button}
         onPress={() => navigation.navigate("GameStart")}
@@ -48,9 +50,25 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
+
+  greetingbox: {
+    backgroundColor: "white",
+    bottom: 60,
+    borderWidth: 1,
+    borderRadius: 10,
+    width: 300,
+  },
+
+  greeting: {
+    fontSize: 25,
+    lineHeight: 40,
+    fontFamily: "DotGothic16_400Regular",
+    letterSpacing: 0.25,
+    textAlign: "center",
+  },
   header: {
     fontSize: 63,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 220,
+    bottom: 150,
   },
 });

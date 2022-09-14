@@ -1,12 +1,13 @@
 import { NavigationContainer, navigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import "react-native-url-polyfill/auto";
-import AppLoading from "expo-app-loading";
+import { LogBox } from "react-native";
+
 import {
   useFonts,
   DotGothic16_400Regular,
 } from "@expo-google-fonts/dotgothic16";
-import { StatusBar } from "react-native";
+import { StatusBar, Text } from "react-native";
 import { useState } from "react";
 
 import Login from "./Screens/Login";
@@ -19,21 +20,24 @@ import GetLeaderboard from "./Screens/Leaderboard";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [username, setUsername] = useState("");
+  LogBox.ignoreLogs([
+    "Warning: Async Storage has been extracted from react-native core",
+  ]);
+  const [userName, setUsername] = useState("");
 
   StatusBar.setHidden(true);
   let [fontsLoaded] = useFonts({
     DotGothic16_400Regular,
   });
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <Text>Loading</Text>;
   } else {
     return (
       <NavigationContainer>
         <Stack.Navigator ini>
           <Stack.Screen name="Login" options={{ headerShown: false }}>
             {(props) => (
-              <Login username={username} setUsername={setUsername} {...props} />
+              <Login username={userName} setUsername={setUsername} {...props} />
             )}
           </Stack.Screen>
           <Stack.Screen name="GameScreen" options={{ headerShown: false }}>
@@ -45,10 +49,10 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="HomeFeed" options={{ headerShown: false }}>
-            {(props) => <HomeFeed username={username} {...props} />}
+            {(props) => <HomeFeed username={userName} {...props} />}
           </Stack.Screen>
           <Stack.Screen name="GameFinish" options={{ headerShown: false }}>
-            {(props) => <GameFinish username={username} {...props} />}
+            {(props) => <GameFinish username={userName} {...props} />}
           </Stack.Screen>
           <Stack.Screen
             name="Leaderboard"

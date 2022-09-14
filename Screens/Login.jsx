@@ -16,7 +16,14 @@ import {
 } from "firebase/auth";
 import { auth } from "../Core/config";
 import { NavigationContainer, navigation } from "@react-navigation/native";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../Core/config";
 export default Login = ({ navigation, username, setUsername }) => {
   const robotTaglines = [
@@ -37,60 +44,62 @@ export default Login = ({ navigation, username, setUsername }) => {
   useEffect(() => {
     setTagLine();
   }, []);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [clickedRegister, setClickedRegister] = useState(false);
+  const [clickedLogin, setClickedLogin] = useState(false);
   const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const uid = userCredentials.user.uid;
-        //const user = userCredentials.user;
-        // console.log("Logged in with", email);
-        const userData = {
-          id: uid,
-          email,
-          username,
-          createdAt: new Date().toISOString(),
-          // decision: "None",
-          // firstName: "",
-          // lastName: "",
-          // userImg: `no-profile-image.png`,
-        };
-        const scoresData = {
-          id: uid,
-          createdAt: new Date().toISOString(),
-          highScore: 0,
-        };
-
-        async function get(db) {
-          const userRef = collection(db, "Users");
-          // const userdocs = await getDocs(usersRef);
-          // const username = userdocs.docs.map((doc) => doc.data());
-          const usersRef = doc(db, "Users", username);
-          await setDoc(usersRef, userData);
-          const userdocs = await getDocs(userRef);
-          console.log(userdocs.docs.map((doc) => doc.data()));
-          const scoresRef = doc(db, "Scores", username);
-          await setDoc(scoresRef, scoresData);
-        }
-
-        // async function updateScore(db) {
-        //   const scoresRef = doc(db, "Scores", username);
-        //   await setDoc(scoresRef, scoresData);
-        // }
-
-        get(db);
-        const user = userCredentials.user;
-        setIsSignedIn(true);
-        navigation.navigate("HomeFeed");
-        return userCredentials;
-      })
-      .catch((error) => {
-        console.log(error.message);
-        alert(error.message);
-        throw error;
-      });
+    setClickedLogin(false);
+    setClickedRegister(true);
+    if (username) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredentials) => {
+          const uid = userCredentials.user.uid;
+          //const user = userCredentials.user;
+          // console.log("Logged in with", email);
+          const userData = {
+            id: uid,
+            email,
+            username,
+            createdAt: new Date().toISOString(),
+            // decision: "None",
+            // firstName: "",
+            // lastName: "",
+            // userImg: `no-profile-image.png`,
+          };
+          const scoresData = {
+            id: uid,
+            createdAt: new Date().toISOString(),
+            highScore: 0,
+            userName: username,
+          };
+          async function get(db) {
+            const userRef = collection(db, "Users");
+            // const userdocs = await getDocs(usersRef);
+            // const username = userdocs.docs.map((doc) => doc.data());
+            const usersRef = doc(db, "Users", username);
+            await setDoc(usersRef, userData);
+            const userdocs = await getDocs(userRef);
+            console.log(userdocs.docs.map((doc) => doc.data()));
+            const scoresRef = doc(db, "Scores", username);
+            await setDoc(scoresRef, scoresData);
+          }
+          // async function updateScore(db) {
+          //   const scoresRef = doc(db, "Scores", username);
+          //   await setDoc(scoresRef, scoresData);
+          // }
+          get(db);
+          setIsSignedIn(true);
+          navigation.navigate("HomeFeed");
+          return userCredentials;
+        })
+        .catch((error) => {
+          console.log(error.message);
+          alert(error.message);
+          throw error;
+        });
+    }
   };
   const handleSignOut = () => {
     signOut(auth)
@@ -104,19 +113,34 @@ export default Login = ({ navigation, username, setUsername }) => {
       });
   };
   const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Logged in with", email);
-        setIsSignedIn(true);
-        navigation.navigate("HomeFeed");
-        return userCredentials;
-      })
-      .catch((error) => {
-        console.log(error.message);
-        alert(error.message);
-        throw error;
-      });
+    setClickedRegister(false);
+    setClickedLogin(true);
+    if (email.length > 0) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredentials) => {
+          const usersRef = collection(db, "Users");
+          const q = query(usersRef, where("email", "==", email));
+          async function getUsername() {
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+              // doc.data() is never undefined for query doc snapshots
+              //console.log(doc.id, " => ", doc.data());
+              setUsername(doc.id);
+            });
+          }
+          getUsername();
+          const user = userCredentials.user;
+          console.log("Logged in with", email);
+          setIsSignedIn(true);
+          navigation.navigate("HomeFeed");
+          return userCredentials;
+        })
+        .catch((error) => {
+          console.log(error.message);
+          alert(error.message);
+          throw error;
+        });
+    }
   };
   return (
     <View
@@ -139,25 +163,46 @@ export default Login = ({ navigation, username, setUsername }) => {
       </Animatable.Text>
       <KeyboardAvoidingView style={styles.Container} behaviour="padding">
         <View styles={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => setUsername(text)}
-            placeholder="Username"
-            // dense={true}
-          />
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChange={(text) => setEmail(text.nativeEvent.text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChange={(text) => setPassword(text.nativeEvent.text)}
-            style={styles.input}
-            secureTextEntry
-          />
+          {clickedRegister ? (
+            <>
+              <TextInput
+                style={styles.textInput}
+                onChangeText={(text) => setUsername(text)}
+                placeholder="Username"
+                // dense={true}
+              />
+              <TextInput
+                placeholder="Email"
+                value={email}
+                onChange={(text) => setEmail(text.nativeEvent.text)}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChange={(text) => setPassword(text.nativeEvent.text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </>
+          ) : null}
+          {clickedLogin ? (
+            <>
+              <TextInput
+                placeholder="Email"
+                value={email}
+                onChange={(text) => setEmail(text.nativeEvent.text)}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChange={(text) => setPassword(text.nativeEvent.text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </>
+          ) : null}
         </View>
         <View style={styles.buttonContainer}>
           {isSignedIn === false ? (
@@ -192,12 +237,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 80,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 250,
+    bottom: 100,
   },
   tag: {
     fontSize: 15,
     fontFamily: "DotGothic16_400Regular",
-    bottom: 220,
+    bottom: 80,
     width: 300,
     alignItems: "center",
   },
