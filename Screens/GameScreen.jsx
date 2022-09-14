@@ -219,9 +219,7 @@ const styles = StyleSheet.create({
   },
   textOne: {
     marginTop: 16,
-    // paddingVertical: 8,
     borderWidth: StyleSheet.hairlineWidth,
-    // backgroundColor: "#61dafb",
     color: "#20232a",
     textAlign: "center",
     fontSize: 30,
@@ -230,9 +228,7 @@ const styles = StyleSheet.create({
   },
   textTwo: {
     marginTop: 16,
-    // paddingVertical: 8,
     borderWidth: StyleSheet.hairlineWidth,
-    // backgroundColor: "#61dafb",
     color: "#20232a",
     textAlign: "center",
     fontSize: 30,

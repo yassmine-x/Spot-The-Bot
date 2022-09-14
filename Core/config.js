@@ -7,7 +7,6 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import "firebase/compat/auth";
 
-// TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyClr0s6vMUQ_A7NUJUxuDpkVbjDHEJDi70",
   authDomain: "spot-the-bot-9c3fc.firebaseapp.com",

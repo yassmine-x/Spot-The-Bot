@@ -56,17 +56,11 @@ export default Login = ({ navigation, username, setUsername }) => {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredentials) => {
           const uid = userCredentials.user.uid;
-          //const user = userCredentials.user;
-          // console.log("Logged in with", email);
           const userData = {
             id: uid,
             email,
             username,
             createdAt: new Date().toISOString(),
-            // decision: "None",
-            // firstName: "",
-            // lastName: "",
-            // userImg: `no-profile-image.png`,
           };
           const scoresData = {
             id: uid,
@@ -76,8 +70,6 @@ export default Login = ({ navigation, username, setUsername }) => {
           };
           async function get(db) {
             const userRef = collection(db, "Users");
-            // const userdocs = await getDocs(usersRef);
-            // const username = userdocs.docs.map((doc) => doc.data());
             const usersRef = doc(db, "Users", username);
             await setDoc(usersRef, userData);
             const userdocs = await getDocs(userRef);
@@ -85,10 +77,6 @@ export default Login = ({ navigation, username, setUsername }) => {
             const scoresRef = doc(db, "Scores", username);
             await setDoc(scoresRef, scoresData);
           }
-          // async function updateScore(db) {
-          //   const scoresRef = doc(db, "Scores", username);
-          //   await setDoc(scoresRef, scoresData);
-          // }
           get(db);
           setIsSignedIn(true);
           navigation.navigate("HomeFeed");
@@ -123,8 +111,6 @@ export default Login = ({ navigation, username, setUsername }) => {
           async function getUsername() {
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
-              // doc.data() is never undefined for query doc snapshots
-              //console.log(doc.id, " => ", doc.data());
               setUsername(doc.id);
             });
           }
@@ -169,7 +155,6 @@ export default Login = ({ navigation, username, setUsername }) => {
                 style={styles.textInput}
                 onChangeText={(text) => setUsername(text)}
                 placeholder="Username"
-                // dense={true}
               />
               <TextInput
                 placeholder="Email"
