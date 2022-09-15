@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { NavigationContainer, navigation } from "@react-navigation/native";
 import {
@@ -12,7 +12,7 @@ import {
 import { db } from "../Core/config";
 import { DataTable } from "react-native-paper";
 
-export default function GetLeaderboard() {
+export default function GetLeaderboard({ navigation }) {
   const leaderboardData = [];
   let filteredLeaderboardData = [];
   const [table, setTable] = useState([]);
@@ -81,6 +81,12 @@ export default function GetLeaderboard() {
         <Text style={styles.title}>Leaderboard</Text>
         <View style={styles.table}>
           <Text>{table}</Text>
+          <Pressable
+            style={styles.button}
+            onPress={() => navigation.navigate("HomeFeed")}
+          >
+            <Text style={styles.text}>Home</Text>
+          </Pressable>
         </View>
       </View>
     </>
@@ -99,6 +105,7 @@ const styles = StyleSheet.create({
   },
   table: {
     top: 20,
+    alignItems: "center",
   },
   headerright: {
     fontSize: 23,
@@ -118,7 +125,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   celltwo: {
-    backgroundColor: "blue",
+    backgroundColor: "white",
     borderRadius: 10,
+  },
+  button: {
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    marginBottom: 15,
+    marginTop: 15,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: `#6495ed`,
+    width: 350,
+  },
+  text: {
+    fontSize: 20,
+    lineHeight: 21,
+    fontFamily: "DotGothic16_400Regular",
+    letterSpacing: 0.25,
+    color: "white",
   },
 });

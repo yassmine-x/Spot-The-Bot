@@ -141,7 +141,7 @@ export default GameScreen = ({ route, navigation }) => {
           <Text>Your Current Topic: {topicName.topic}</Text>
           <Countdown
             size={30}
-            until={5}
+            until={30}
             running={isClockRunning}
             onFinish={() => {
               handleFinish();

@@ -191,7 +191,7 @@ export default Login = ({ navigation, username, setUsername }) => {
         </View>
         <View style={styles.buttonContainer}>
           {isSignedIn === false ? (
-            <Animatable.View animation="bounceInUp" duration={btnDuration}>
+            <Animatable.View animation="bounceInLeft" duration={btnDuration}>
               <TouchableOpacity
                 onPress={handleLogin}
                 style={[styles.button, styles.buttonOutline]}
@@ -207,12 +207,14 @@ export default Login = ({ navigation, username, setUsername }) => {
               <Text style={styles.text}>Sign out</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={handleSignUp}
-            style={[styles.button, styles.buttonOutline]}
-          >
-            <Text style={styles.text}>Register</Text>
-          </TouchableOpacity>
+          <Animatable.View animation="bounceInRight" duration={btnDuration}>
+            <TouchableOpacity
+              onPress={handleSignUp}
+              style={[styles.button, styles.buttonOutline]}
+            >
+              <Text style={styles.text}>Register</Text>
+            </TouchableOpacity>
+          </Animatable.View>
         </View>
       </KeyboardAvoidingView>
     </View>
