@@ -197,10 +197,6 @@ export default GameScreen = ({ route, navigation }) => {
               <Text>{tweetData[2][1]}</Text>
             </Pressable>
           </View>
-          <Button
-            title="Confirm"
-            onPress={() => confirmSelection({ navigation })}
-          ></Button>
         </View>
       )}
     </>
